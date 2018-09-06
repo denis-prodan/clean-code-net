@@ -43,7 +43,14 @@ namespace TestCommon
         /// <param name="allowNewCompilerDiagnostics">A bool controlling whether or not the test will fail if the CodeFix introduces other warnings after being applied</param>
         protected void VerifyCSharpFix(string oldSource, string newSource, int? codeFixIndex = null, bool allowNewCompilerDiagnostics = false)
         {
-            VerifyFix(LanguageNames.CSharp, GetCSharpDiagnosticAnalyzer(), GetCSharpCodeFixProvider(), oldSource, newSource, codeFixIndex, allowNewCompilerDiagnostics);
+            VerifyFix(
+                language: LanguageNames.CSharp,
+                analyzer: GetCSharpDiagnosticAnalyzer(),
+                codeFixProvider: GetCSharpCodeFixProvider(), 
+                oldSource: oldSource, 
+                newSource: newSource, 
+                codeFixIndex: codeFixIndex, 
+                allowNewCompilerDiagnostics: allowNewCompilerDiagnostics);
         }
 
         /// <summary>
@@ -55,7 +62,13 @@ namespace TestCommon
         /// <param name="allowNewCompilerDiagnostics">A bool controlling whether or not the test will fail if the CodeFix introduces other warnings after being applied</param>
         protected void VerifyBasicFix(string oldSource, string newSource, int? codeFixIndex = null, bool allowNewCompilerDiagnostics = false)
         {
-            VerifyFix(LanguageNames.VisualBasic, GetBasicDiagnosticAnalyzer(), GetBasicCodeFixProvider(), oldSource, newSource, codeFixIndex, allowNewCompilerDiagnostics);
+            VerifyFix(language: LanguageNames.VisualBasic, 
+                analyzer: GetBasicDiagnosticAnalyzer(), 
+                codeFixProvider: GetBasicCodeFixProvider(),
+                oldSource: oldSource, 
+                newSource: newSource, 
+                codeFixIndex: codeFixIndex, 
+                allowNewCompilerDiagnostics: allowNewCompilerDiagnostics);
         }
 
         /// <summary>
@@ -81,7 +94,7 @@ namespace TestCommon
             for (int i = 0; i < attempts; ++i)
             {
                 var actions = new List<CodeAction>();
-                var context = new CodeFixContext(document, analyzerDiagnostics[0], (a, d) => actions.Add(a), CancellationToken.None);
+                var context = new CodeFixContext(document: document, diagnostic: analyzerDiagnostics[0], registerCodeFix: (a, d) => actions.Add(a), cancellationToken: CancellationToken.None);
                 codeFixProvider.RegisterCodeFixesAsync(context).Wait();
 
                 if (!actions.Any())

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="NamedParametersAnalyzer.7b8e042a-0009-4264-b2e8-4720c03cc285" Version="0.1" Language="en-US" Publisher="Denys Prodan"/>
+        <Identity Id="NamedParametersAnalyzer.7b8e042a-0009-4264-b2e8-4720c03cc285" Version="0.2" Language="en-US" Publisher="Denys Prodan"/>
         <DisplayName>Named Parameters Analyzer</DisplayName>
         <Description xml:space="preserve">Diagnostic extension that verifies calls with 4 and more parameters must have parameter names.</Description>
     </Metadata>
