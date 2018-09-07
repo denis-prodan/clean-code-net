@@ -15,7 +15,7 @@
     <PackageIconUrl></PackageIconUrl>
     <RepositoryUrl>https://github.com/denis-prodan/named-parameters-analyzer</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>Diagnostic extension that verifies calls with 4 and more parameters must have parameter names.</Description>
+    <Description>A diagnostic extension that verifies calls with 4 and more parameters must have parameter names.</Description>
     <PackageReleaseNotes>Fix bug in fixer for constructors.</PackageReleaseNotes>
     <Copyright></Copyright>
     <PackageTags>NamedParametersAnalyzer, analyzers, parameter</PackageTags>

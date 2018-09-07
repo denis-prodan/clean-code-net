@@ -30,7 +30,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NamedParametersAnalyzer.Tes
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestCommon", "TestCommon\TestCommon.csproj", "{896CCBDF-7BF2-46DB-978C-071F1667C41E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanCode.NET.VSIX", "CleanCode.NET\CleanCode.NET.VSIX.csproj", "{F7B751C1-FC4A-48F1-817C-08D8F1DEB3AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanCode.NET.VSIX", "CleanCode.NET.VSIX\CleanCode.NET.VSIX.csproj", "{F7B751C1-FC4A-48F1-817C-08D8F1DEB3AC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EEEF2C42-209D-47E4-8D50-1BE65FB5E6C8}"
+	ProjectSection(SolutionItems) = preProject
+		CleanCodeNet.nuspec = CleanCodeNet.nuspec
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -5,6 +5,7 @@
         <DisplayName>Clean Code .NET</DisplayName>
         <Description xml:space="preserve">Clean Code .NET - set of Roslyn analyzers aimed to improve code correctness
 Not affiliated with Bob Martin</Description>
+        <MoreInfo>https://github.com/denis-prodan/clean-code-net</MoreInfo>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0, 16.0)" />

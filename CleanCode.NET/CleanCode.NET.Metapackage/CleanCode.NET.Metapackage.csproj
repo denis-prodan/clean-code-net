@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ConstructorNullAnalyzer" Version="0.4.0" />
+    <PackageReference Include="NamedParametersAnalyzer" Version="0.2.0" />
+    <PackageReference Include="SwitchAnalyzer" Version="0.6.6" />
+  </ItemGroup>
+
+</Project>
