@@ -35,6 +35,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{EEEF2C42-209D-47E4-8D50-1BE65FB5E6C8}"
 	ProjectSection(SolutionItems) = preProject
 		CleanCodeNet.nuspec = CleanCodeNet.nuspec
+		Readme.md = Readme.md
 	EndProjectSection
 EndProject
 Global
