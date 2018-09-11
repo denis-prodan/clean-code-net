@@ -75,6 +75,11 @@ namespace NamedParametersAnalyzer
             if (!argumentsWithoutNamecolon.Any())
                 return;
 
+            var call = nodeContext.Node as ExpressionSyntax;
+            var callParameters = ParametersHelper.GetInvocationParameters(nodeContext.SemanticModel, call);
+            if (callParameters.Any(x => x.isParams))
+                return;
+
             var diagnostic = Diagnostic.Create(
                 descriptor: Rule,
                 location: nodeContext.Node.GetLocation());
