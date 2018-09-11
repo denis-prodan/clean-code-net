@@ -35,6 +35,10 @@ namespace ConsoleApplication1
         public void Method1(string param1, string param2, string param3)
         {{
         }}
+
+        public void MethodParams(int param1, int param2, int param3, params string[] multipleParam)
+        {{
+        }}
     }}
 }}";
 
@@ -71,7 +75,7 @@ namespace ConsoleApplication1
         {
             var call = @"
         {
-            TypeName(""param1"", param2: ""param2"", param3: ""param3"", param4: ""param4"");
+            var s = new TypeName(""param1"", param2: ""param2"", param3: ""param3"", param4: ""param4"");
         }";
             var test = GetCode(call);
             var expected = new DiagnosticResult
@@ -80,7 +84,7 @@ namespace ConsoleApplication1
                 Message = NamedParametersAnalyzer.MessageFormat,
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
-                    new[] { new DiagnosticResultLocation("Test0.cs", 15, 13) }
+                    new[] { new DiagnosticResultLocation("Test0.cs", 15, 21) }
             };
 
             VerifyCSharpDiagnostic(test, expected);
@@ -88,7 +92,7 @@ namespace ConsoleApplication1
         [TestMethod]
         public void ExpressionBodied()
         {
-            var call = @" => TypeName(""param1"", param2: ""param2"", param3: ""param3"", param4: ""param4"");";
+            var call = @" => new TypeName(""param1"", param2: ""param2"", param3: ""param3"", param4: ""param4"");";
             var test = GetCode(call);
             var expected = new DiagnosticResult
             {
@@ -109,6 +113,18 @@ namespace ConsoleApplication1
         {
             Method1(""param1"", param2: ""param2"", param3: ""param3"");
         }";
+            var test = GetCode(call);
+
+            VerifyCSharpDiagnostic(test);
+        }
+
+        [TestMethod]
+        public void ParamsNotVerified()
+        {
+            var call = @"
+            {
+                MethodParams(1, 2, 3, ""str1"", ""str2"", ""str3"");
+            }";
             var test = GetCode(call);
 
             VerifyCSharpDiagnostic(test);

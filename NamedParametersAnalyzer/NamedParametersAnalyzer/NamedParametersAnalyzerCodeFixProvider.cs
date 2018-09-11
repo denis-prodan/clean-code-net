@@ -74,9 +74,10 @@ namespace NamedParametersAnalyzer
 
         private async Task<Solution> UpdateInvocationArguments(CodeFixContext context, InvocationExpressionSyntax invocation, CancellationToken cancellationToken)
         {
-            var parameterNames = await GetInvocationParameters(context, invocation, cancellationToken);
+            var semanticModel = await context.Document.GetSemanticModelAsync(cancellationToken);
+            var parameterNames = ParametersHelper.GetInvocationParameters(semanticModel, invocation, cancellationToken);
 
-            var updatedArguments = GetUpdatedArguments(invocation.ArgumentList, parameterNames);
+            var updatedArguments = GetUpdatedArguments(invocation.ArgumentList, parameterNames.Select(x => x.name));
             var newInvocation = invocation.WithArgumentList(SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(updatedArguments)));
 
             var documentEditor = await DocumentEditor.CreateAsync(context.Document, cancellationToken);
@@ -88,9 +89,10 @@ namespace NamedParametersAnalyzer
 
         private async Task<Solution> UpdateCreationArguments(CodeFixContext context, ObjectCreationExpressionSyntax creation, CancellationToken cancellationToken)
         {
-            var parameterNames = await GetInvocationParameters(context, creation, cancellationToken);
+            var semanticModel = await context.Document.GetSemanticModelAsync(cancellationToken);
+            var parameterNames = ParametersHelper.GetInvocationParameters(semanticModel, creation, cancellationToken);
 
-            var updatedArguments = GetUpdatedArguments(creation.ArgumentList, parameterNames);
+            var updatedArguments = GetUpdatedArguments(creation.ArgumentList, parameterNames.Select(x => x.name));
             var newCreation = creation.WithArgumentList(SyntaxFactory.ArgumentList(SyntaxFactory.SeparatedList(updatedArguments)));
 
             var documentEditor = await DocumentEditor.CreateAsync(context.Document, cancellationToken);
@@ -100,21 +102,11 @@ namespace NamedParametersAnalyzer
             return newDocument.Project.Solution;
         }
 
-        private async Task<IEnumerable<string>> GetInvocationParameters(CodeFixContext context, ExpressionSyntax call, CancellationToken cancellationToken)
-        {
-            var semanticModel = await context.Document.GetSemanticModelAsync(cancellationToken);
-            var invocationModel = semanticModel
-                .GetSymbolInfo(call, context.CancellationToken)
-                .Symbol as IMethodSymbol;
-
-            return invocationModel.Parameters.Select(x => x.Name);
-        }
-
         private IEnumerable<ArgumentSyntax> GetUpdatedArguments(ArgumentListSyntax arguments,
             IEnumerable<string> parametersList)
         {
-            var argumentsAndParams = parametersList.Zip(arguments.Arguments, 
-                (param, arg) => (arg: arg, param: param));
+            var argumentsAndParams = arguments.Arguments.Zip(parametersList, 
+                (arg, param) => (arg: arg, param: param));
 
             var updatedArguments = argumentsAndParams.Select(x => FixArgumentIfNeeded(x.arg, x.param));
 
