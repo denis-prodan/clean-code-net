@@ -258,7 +258,7 @@ namespace OtherNamespace
         }
 
         [TestMethod]
-        public void BItwiseOrValid()
+        public void BItwiseOrInvalid()
         {
             var switchStatement = @"
             switch (TestEnum.Case1)
@@ -271,7 +271,7 @@ namespace OtherNamespace
                           {switchStatement}
                           {GetEndSection()}";
 
-            VerifyCSharpDiagnostic(test);
+            VerifyCSharpDiagnostic(test, GetDiagnostic("TestEnum.Case1", "TestEnum.Case2"));
         }
 
         [TestMethod]
@@ -322,7 +322,7 @@ namespace OtherNamespace
                           {switchStatement}
                           {GetEndSection()}";
 
-            VerifyCSharpDiagnostic(test);
+            VerifyCSharpDiagnostic(test, GetDiagnostic("TestEnum.Case2", "TestEnum.Case3"));
         }
 
         [TestMethod]

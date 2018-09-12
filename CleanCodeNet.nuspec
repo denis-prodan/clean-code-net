@@ -2,18 +2,18 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>CleanCodeNet</id>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <authors>Denys Prodan</authors>
     <owners>Denys Prodan</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <projectUrl>https://github.com/denis-prodan/clean-code-net</projectUrl>
     <description>Metapackage that includes analyzers to improve code correctness. Not affiliated with Bob Martin.</description>
-    <releaseNotes>Update NamedParametersAnalyzer to fix critical issue with "params" modifier</releaseNotes>
+    <releaseNotes>Update SwitchAnalyzer to fix incorrect bitwise operation validation.</releaseNotes>
     <tags>analyzers, code, correctness, ConstructorNullAnalyzer, NamedParametersAnalyzer, SwitchAnalyzer</tags>
     <repository url="https://github.com/denis-prodan/constructor-null-analyzer" />
     <dependencies>
       <dependency id="NamedParametersAnalyzer" version="0.3.0" />
-      <dependency id="SwitchAnalyzer" version="0.6.6" />
+      <dependency id="SwitchAnalyzer" version="0.6.7" />
       <dependency id="ConstructorNullAnalyzer" version="0.4.0" />
     </dependencies>
   </metadata>
