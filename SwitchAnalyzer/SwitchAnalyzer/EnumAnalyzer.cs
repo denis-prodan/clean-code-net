@@ -72,7 +72,10 @@ namespace SwitchAnalyzer
                     {
                         var left = GetExpressions(binaryExpression.Left).ToList();
                         var right = GetExpressions(binaryExpression.Right).ToList();
-                        if (AreExpressionListsEqual(left, right))
+
+                        if (left.Count == 1 
+                            && right.Count == 1 
+                            && AreExpressionListsEqual(left, right))
                         {
                             return left;
                         }
@@ -83,9 +86,25 @@ namespace SwitchAnalyzer
                     }
                     if (binaryExpression.Kind() == SyntaxKind.BitwiseOrExpression)
                     {
-                        var left = GetExpressions(binaryExpression.Left);
-                        var right = GetExpressions(binaryExpression.Right);
-                        return left.Union(right);
+                        var left = GetExpressions(binaryExpression.Left).ToList();
+                        var right = GetExpressions(binaryExpression.Right).ToList();
+
+                        if (left.Count == 0 && right.Count > 0)
+                        {
+                            return right;
+                        }
+
+                        if (right.Count == 0 && left.Count > 0)
+                        {
+                            return left;
+                        }
+
+                        if (left.Count == 1
+                            && right.Count == 1
+                            && AreExpressionListsEqual(left, right))
+                        {
+                            return left;
+                        }
                     }
                 }
                 return new MemberAccessExpressionSyntax[0];

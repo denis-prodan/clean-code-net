@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="CleanCode.NET.9ecfa9bb-0775-48d0-9898-4dbbbd529fe3" Version="0.2" Language="en-US" Publisher="Denys Prodan" />
+        <Identity Id="CleanCode.NET.9ecfa9bb-0775-48d0-9898-4dbbbd529fe3" Version="0.2.1" Language="en-US" Publisher="Denys Prodan" />
         <DisplayName>Clean Code .NET</DisplayName>
         <Description xml:space="preserve">Clean Code .NET - set of Roslyn analyzers aimed to improve code correctness
 Not affiliated with Bob Martin</Description>
