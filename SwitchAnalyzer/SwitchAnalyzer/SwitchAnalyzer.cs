@@ -12,8 +12,18 @@ namespace SwitchAnalyzer
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class SwitchAnalyzer : DiagnosticAnalyzer
     {
+        private const string AnalyzerErrorId = "CCN0000";
+        private static readonly string SwitchAnalyzerErrorMessage = "Switch analyzer error. Please, contact author";
+        internal static readonly DiagnosticDescriptor AnalyzerErrorDescriptor = new DiagnosticDescriptor(
+            id: AnalyzerErrorId,
+            title: SwitchAnalyzerErrorMessage,
+            messageFormat: SwitchAnalyzerErrorMessage,
+            category: "Correctness",
+            defaultSeverity: DiagnosticSeverity.Info,
+            isEnabledByDefault: true,
+            description: SwitchAnalyzerErrorMessage);
 
-        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(EnumAnalyzer.Rule, InterfaceAnalyzer.Rule, ClassAnalyzer.Rule);
+        public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(EnumAnalyzer.Rule, InterfaceAnalyzer.Rule, ClassAnalyzer.Rule, AnalyzerErrorDescriptor);
 
         public override void Initialize(AnalysisContext context)
         {
@@ -22,13 +32,26 @@ namespace SwitchAnalyzer
 
         private static void Action(CodeBlockAnalysisContext context)
         {
-            var blockSyntaxes = context.CodeBlock.ChildNodes().OfType<BlockSyntax>(); ;
+            var blockSyntaxes = context.CodeBlock.ChildNodes().OfType<BlockSyntax>();
 
             var switchStatements = blockSyntaxes.SelectMany(x => x.Statements.OfType<SwitchStatementSyntax>());
 
             foreach (var switchStatement in switchStatements)
             {
-                CheckSwitch(switchStatement, context);
+                try
+                {
+
+                    CheckSwitch(switchStatement, context);
+                }
+                catch (Exception e)
+                {
+                    var diagnostic = Diagnostic.Create(
+                        descriptor: AnalyzerErrorDescriptor,
+                        location: switchStatement.GetLocation(),
+                        messageArgs: e.ToString());
+
+                    context.ReportDiagnostic(diagnostic);
+                }
             }
         }
 

@@ -219,7 +219,7 @@ namespace SwitchAnalyzer.Test
         {
             return new DiagnosticResult
             {
-                Id = "SA003",
+                Id = "CCN0003",
                 Message = String.Format("Switch case should check implementation of type(s): {0}", string.Join(", ", expectedTypes)),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =

@@ -45,7 +45,7 @@ namespace ConsoleApplication1
             var test = BuildDocumentCode(constructorDeclaration);
             var expected = new DiagnosticResult
             {
-                Id = "CA001",
+                Id = ConstructorNullAnalyzer.DiagnosticId,
                 Message = string.Format("Constructor should check that parameter(s) {0} are not null", "param1, param3"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -84,7 +84,7 @@ namespace ConsoleApplication1
             var testNoUsing = test.Replace("using System;", "");
             var expected = new DiagnosticResult
             {
-                Id = "CA001",
+                Id = ConstructorNullAnalyzer.DiagnosticId,
                 Message = string.Format("Constructor should check that parameter(s) {0} are not null", "param1"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -137,7 +137,7 @@ namespace ConsoleApplication1
 
             var expected = new DiagnosticResult
             {
-                Id = "CA001",
+                Id = ConstructorNullAnalyzer.DiagnosticId,
                 Message = string.Format("Constructor should check that parameter(s) {0} are not null", "param1"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -173,7 +173,7 @@ namespace ConsoleApplication1
 
             var expected = new DiagnosticResult
             {
-                Id = "CA001",
+                Id = ConstructorNullAnalyzer.DiagnosticId,
                 Message = string.Format("Constructor should check that parameter(s) {0} are not null", "param1"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -217,7 +217,7 @@ namespace ConsoleApplication1
 
             var expected = new DiagnosticResult
             {
-                Id = "CA001",
+                Id = ConstructorNullAnalyzer.DiagnosticId,
                 Message = string.Format("Constructor should check that parameter(s) {0} are not null", "param1, param2"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -265,7 +265,7 @@ using System.Diagnostics.Contracts;");
 
             var expected = new DiagnosticResult
             {
-                Id = "CA001",
+                Id = ConstructorNullAnalyzer.DiagnosticId,
                 Message = string.Format("Constructor should check that parameter(s) {0} are not null", "param1, param2, param3"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -310,7 +310,7 @@ using System.Diagnostics.Contracts;");
 
             var expected = new DiagnosticResult
             {
-                Id = "CA001",
+                Id = ConstructorNullAnalyzer.DiagnosticId,
                 Message = string.Format("Constructor should check that parameter(s) {0} are not null", "param1"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
@@ -347,7 +347,7 @@ using System.Diagnostics.Contracts;");
 
             var expected = new DiagnosticResult
             {
-                Id = "CA001",
+                Id = ConstructorNullAnalyzer.DiagnosticId,
                 Message = string.Format("Constructor should check that parameter(s) {0} are not null", "param1"),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =

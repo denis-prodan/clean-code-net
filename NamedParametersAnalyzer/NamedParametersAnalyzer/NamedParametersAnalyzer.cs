@@ -12,8 +12,8 @@ namespace NamedParametersAnalyzer
     public class NamedParametersAnalyzer : DiagnosticAnalyzer
     {
         private const int ParamsThreshold = 4;
-        public const string DiagnosticId = "NP001";
-        private const string AnalyzerErrorDiagnosticId = "NP000";
+        public const string DiagnosticId = "CCN0031";
+        private const string AnalyzerErrorDiagnosticId = "CCN0030";
 
         private static readonly string Title = $"Method calls with {ParamsThreshold} or more parameters should be named";
 

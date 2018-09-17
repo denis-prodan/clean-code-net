@@ -291,7 +291,7 @@ namespace OtherNamespace
         {
             return new DiagnosticResult
             {
-                Id = "SA002",
+                Id = "CCN0002",
                 Message = String.Format("Switch case should check interface implementation of type(s): {0}", string.Join(", ", expectedTypes)),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =

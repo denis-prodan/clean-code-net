@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <PackageId>NamedParametersAnalyzer</PackageId>
-    <PackageVersion>0.3.0.0</PackageVersion>
+    <PackageVersion>0.3.1.0</PackageVersion>
     <Authors>Denys Prodan</Authors>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl></PackageProjectUrl>
@@ -16,11 +16,11 @@
     <RepositoryUrl>https://github.com/denis-prodan/named-parameters-analyzer</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Description>A diagnostic extension that verifies calls with 4 and more parameters must have parameter names.</Description>
-    <PackageReleaseNotes>Disable analysis calls with "params" argument to fix fixer issue with swallowing parameters in that case.</PackageReleaseNotes>
+    <PackageReleaseNotes>Align diagnostics id with other packages.</PackageReleaseNotes>
     <Copyright></Copyright>
     <PackageTags>NamedParametersAnalyzer, analyzers, parameter</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Version>0.3.0</Version>
+    <Version>0.3.1</Version>
     <Company />
   </PropertyGroup>
 

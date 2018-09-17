@@ -547,7 +547,7 @@ namespace OtherNamespace
         {
             return new DiagnosticResult
             {
-                Id = "SA001",
+                Id = "CCN0001",
                 Message = String.Format("Switch case should check enum value(s): {0}", string.Join(", ", expectedEnums)),
                 Severity = DiagnosticSeverity.Warning,
                 Locations =

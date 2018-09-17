@@ -13,8 +13,8 @@ namespace ConstructorNullAnalyzer
     public class ConstructorNullAnalyzer : DiagnosticAnalyzer
     {
         private const string Category = "Correctness";
-        private const string AnalyzerErrorDiagnosticId = "CA000";
-        public const string DiagnosticId = "CA001";
+        private const string AnalyzerErrorDiagnosticId = "CCN0010";
+        public const string DiagnosticId = "CCN0011";
         private static readonly LocalizableString Title = "Not checked reference parameter in constructor";
         private static readonly LocalizableString MessageFormat = "Constructor should check that parameter(s) {0} are not null";
         private static readonly LocalizableString Description = "All reference type parameters should be checked for not-null";

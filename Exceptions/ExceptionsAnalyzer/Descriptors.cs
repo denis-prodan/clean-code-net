@@ -8,7 +8,7 @@ namespace ExceptionsAnalyzer
        
         private const string Category = "Code correctness";
 
-        public const string NoExceptionUsageId = "E001";
+        public const string NoExceptionUsageId = "CCN0021";
         public static readonly string NoExceptionUsageMessage = "Swallowing exceptions without handling considered as bad practice";
         internal static readonly DiagnosticDescriptor NoExceptionUsageDescriptor = new DiagnosticDescriptor(
             id: NoExceptionUsageId, 
@@ -19,7 +19,7 @@ namespace ExceptionsAnalyzer
             isEnabledByDefault: true,
             description: NoExceptionUsageMessage);
 
-        public const string RethrowSameExceptionId = "E002";
+        public const string RethrowSameExceptionId = "CCN0022";
         public static readonly string RethrowSameExceptionMessage = "Rethrow same exception lead to lost of call stack";
         internal static readonly DiagnosticDescriptor RethrowSameExceptionDescriptor = new DiagnosticDescriptor(
             RethrowSameExceptionId,
@@ -30,7 +30,7 @@ namespace ExceptionsAnalyzer
             isEnabledByDefault: true, 
             description: RethrowSameExceptionMessage);
 
-        public const string RethrowWithoutInnerExceptionId = "E003";
+        public const string RethrowWithoutInnerExceptionId = "CCN0023";
         public static readonly string RethrowWithoutInnerMessage = "Rethrow same exception lead to lost of call stack";
         internal static readonly DiagnosticDescriptor RethrowWithoutInnerDescriptor = new DiagnosticDescriptor(
             RethrowWithoutInnerExceptionId,
@@ -41,15 +41,15 @@ namespace ExceptionsAnalyzer
             isEnabledByDefault: true, 
             description: RethrowWithoutInnerMessage);
 
-        internal const string ExceptionAnalyzerErrorId = "E000";
-        private static readonly string ExceptionAnalyzerErrorMessage = "Swallowing exceptions without handling considered as bad practice";
+        internal const string ExceptionAnalyzerErrorId = "CCN0000";
+        private static readonly string ExceptionAnalyzerErrorMessage = "Exception analyzer internal error. Please contact author";
         internal static readonly DiagnosticDescriptor ExceptionAnalyzerErrorDescriptor = new DiagnosticDescriptor(
             id: ExceptionAnalyzerErrorId,
             title: Title,
-            messageFormat: NoExceptionUsageMessage,
+            messageFormat: ExceptionAnalyzerErrorMessage,
             category: Category,
             defaultSeverity: DiagnosticSeverity.Info,
             isEnabledByDefault: true,
-            description: NoExceptionUsageMessage);
+            description: ExceptionAnalyzerErrorMessage);
     }
 }
