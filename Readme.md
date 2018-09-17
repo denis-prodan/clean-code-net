@@ -59,6 +59,33 @@ Should be:
 Method(foo: "Foo", bar: "Bar", baz: "Baz", qux: "Qux");
 ```
 
+## Exceptions analyzer
+Catches common antipatterns of exceptions handling
+```csharp
+catch(Exception e)
+{
+    throw e; // Leads to lost stack trace
+    // Should be:
+    throw;
+}
+```
+```csharp
+catch(Exception e)
+{
+    // Swallow exception without any handling. Should be at least some exception usage
+}
+```
+```csharp
+catch(NullReferenceException e)
+{
+    throw new Exception("Null reference exception"); // Rethrow without inner exception.
+    // Should be:
+    throw new Exception("Null reference exception", e);
+}
+```
+
+
+
 ## How to use
 There are 2 options:
 - Install nuget package to project(s) https://www.nuget.org/packages/CleanCodeNet. This is metapackage, you can install any of analyzers separately

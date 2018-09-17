@@ -8,19 +8,24 @@
 
   <PropertyGroup>
     <PackageId>ExceptionsAnalyzer</PackageId>
-    <PackageVersion>1.0.0.0</PackageVersion>
-    <Authors>dprodan</Authors>
-    <PackageLicenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</PackageLicenseUrl>
-    <PackageProjectUrl>http://PROJECT_URL_HERE_OR_DELETE_THIS_LINE</PackageProjectUrl>
-    <PackageIconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</PackageIconUrl>
-    <RepositoryUrl>http://REPOSITORY_URL_HERE_OR_DELETE_THIS_LINE</RepositoryUrl>
+    <PackageVersion>0.1.0.0</PackageVersion>
+    <Authors>Denys Prodan</Authors>
+    <PackageLicenseUrl></PackageLicenseUrl>
+    <PackageProjectUrl>https://github.com/denis-prodan/clean-code-net</PackageProjectUrl>
+    <PackageIconUrl></PackageIconUrl>
+    <RepositoryUrl>https://github.com/denis-prodan/clean-code-net</RepositoryUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Description>ExceptionsAnalyzer</Description>
-    <PackageReleaseNotes>Summary of changes made in this release of the package.</PackageReleaseNotes>
-    <Copyright>Copyright</Copyright>
+    <Description>Exception handling analyzer - trying to catch common antipatterns in exception handling:
+throw ex - leads to lost stack trace
+Not used exception object
+Rethrow new exception without inner exception</Description>
+    <PackageReleaseNotes>First implementation</PackageReleaseNotes>
+    <Copyright></Copyright>
     <PackageTags>ExceptionsAnalyzer, analyzers</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <LangVersion>latest</LangVersion>
+    <Version>0.1.0</Version>
+    <Product>Exceptions Analyzer</Product>
   </PropertyGroup>
 
   <ItemGroup>

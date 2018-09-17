@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>CleanCodeNet</id>
-    <version>0.1.2</version>
+    <version>0.3.0</version>
     <authors>Denys Prodan</authors>
     <owners>Denys Prodan</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -15,6 +15,7 @@
       <dependency id="NamedParametersAnalyzer" version="0.3.0" />
       <dependency id="SwitchAnalyzer" version="0.6.7" />
       <dependency id="ConstructorNullAnalyzer" version="0.4.0" />
+      <dependency id="ExceptionsAnalyzer" version="0.1.0" />
     </dependencies>
   </metadata>
   <files>

@@ -58,6 +58,12 @@
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
+    <ProjectReference Include="..\Exceptions\ExceptionsAnalyzer\ExceptionsAnalyzer.csproj">
+      <Project>{7F770AE7-0C02-4A62-A6A4-8D63E22A5D1B}</Project>
+      <Name>ExceptionsAnalyzer</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+    </ProjectReference>
     <ProjectReference Include="..\NamedParametersAnalyzer\NamedParametersAnalyzer\NamedParametersAnalyzer.csproj">
       <Project>{d0f3ef18-cbd7-4012-95bf-8679d007db11}</Project>
       <Name>NamedParametersAnalyzer</Name>
