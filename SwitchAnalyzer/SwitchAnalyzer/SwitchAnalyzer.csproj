@@ -43,4 +43,8 @@ Additional rule to  check - switch statement doesn't have "default" branch or th
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\CleanCode.NET.Common\CleanCode.NET.Common.csproj" />
+  </ItemGroup>
+
 </Project>

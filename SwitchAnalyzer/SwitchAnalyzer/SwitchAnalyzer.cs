@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using CleanCode.NET.Common;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -27,6 +28,9 @@ namespace SwitchAnalyzer
 
         public override void Initialize(AnalysisContext context)
         {
+            if (Settings.Current.IsInitialized && Settings.Current.SwitchClassSeverity == Severity.Ignore)
+                return;
+
             context.RegisterCodeBlockAction(Action);
         }
 

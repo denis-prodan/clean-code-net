@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Linq;
+using CleanCode.NET.Common;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -20,6 +21,10 @@ namespace ExceptionsAnalyzer
 
         public override void Initialize(AnalysisContext context)
         {
+            if (Settings.Current.IsInitialized && Settings.Current.ExceptionsSeverity == Severity.Ignore)
+            {
+                return;
+            }
             context.RegisterSyntaxNodeAction(AnalyzeSymbol,SyntaxKind.TryStatement);
         }
 
