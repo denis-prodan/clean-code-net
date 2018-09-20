@@ -90,3 +90,16 @@ catch(NullReferenceException e)
 There are 2 options:
 - Install nuget package to project(s) https://www.nuget.org/packages/CleanCodeNet. This is metapackage, you can install any of analyzers separately
 - Install Visual Studio extension https://marketplace.visualstudio.com/items?itemName=denis-prodan.clean-code-net
+
+## How to select analyzers in Visual Studio extension
+_Tools -> Options... -> Clean Code .NET_
+
+![Options window](/Docs/CleanCodeNetOptions.png)
+
+## How to configure analyzers referenced as NuGet packages
+_Solution explorer -> {Project} -> Dependencies -> Analyzers -> Right click on analyzers -> Set Rule Set Severity_
+
+You will have new file _{ProjectName}.ruleset_ opened in editor
+![Options window](/Docs/PackageAnalyzersOptions.png)
+
+For more information about rulesets you can go to https://docs.microsoft.com/en-us/visualstudio/code-quality/use-roslyn-analyzers?view=vs-2017

@@ -12,9 +12,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ConstructorNull", "ConstructorNull", "{05B5CB48-9A62-4DAE-B1A5-D5E52A2F171B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Switch", "Switch", "{C431C1BA-AFB8-4B19-B285-E23F23871114}"
-	ProjectSection(SolutionItems) = preProject
-		SwitchAnalyzer\README.md = SwitchAnalyzer\README.md
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SwitchAnalyzer", "SwitchAnalyzer\SwitchAnalyzer\SwitchAnalyzer.csproj", "{2E929146-7F38-44E3-9FE1-16676A978ECC}"
 EndProject
