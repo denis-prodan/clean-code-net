@@ -102,8 +102,7 @@ namespace NamedParametersAnalyzer
             return newDocument.Project.Solution;
         }
 
-        private IEnumerable<ArgumentSyntax> GetUpdatedArguments(ArgumentListSyntax arguments,
-            IEnumerable<string> parametersList)
+        private IEnumerable<ArgumentSyntax> GetUpdatedArguments(ArgumentListSyntax arguments, IEnumerable<string> parametersList)
         {
             var argumentsAndParams = arguments.Arguments.Zip(parametersList, 
                 (arg, param) => (arg: arg, param: param));

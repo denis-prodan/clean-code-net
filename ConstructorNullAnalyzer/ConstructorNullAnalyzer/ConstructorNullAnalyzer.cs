@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using CleanCode.NET.Common;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -15,9 +16,9 @@ namespace ConstructorNullAnalyzer
         private const string Category = "Correctness";
         private const string AnalyzerErrorDiagnosticId = "CCN0010";
         public const string DiagnosticId = "CCN0011";
-        private static readonly LocalizableString Title = "Not checked reference parameter in constructor";
-        private static readonly LocalizableString MessageFormat = "Constructor should check that parameter(s) {0} are not null";
-        private static readonly LocalizableString Description = "All reference type parameters should be checked for not-null";
+        private static readonly string Title = "Not checked reference parameter in constructor";
+        private static readonly string MessageFormat = "Constructor should check that parameter(s) {0} are not null";
+        private static readonly string Description = "All reference type parameters should be checked for not-null";
 
         private static readonly DiagnosticDescriptor Rule = new DiagnosticDescriptor(
             id: DiagnosticId,
@@ -41,6 +42,12 @@ namespace ConstructorNullAnalyzer
 
         public override void Initialize(AnalysisContext context)
         {
+            var shouldProceedWithConstructors = Settings.Current.ShouldProceed(x => x.ConstructoNullCheck);
+            if (!shouldProceedWithConstructors)
+            {
+                return;
+            }
+
             context.RegisterSyntaxNodeAction(AnalyzeConstructorAndCatchUnhandledExceptions, SyntaxKind.ConstructorDeclaration);
         }
 

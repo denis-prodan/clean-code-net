@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Linq;
+using CleanCode.NET.Common;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -44,7 +45,16 @@ namespace NamedParametersAnalyzer
 
         public override void Initialize(AnalysisContext context)
         {
-            context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.InvocationExpression, SyntaxKind.ObjectCreationExpression);
+            var shouldProceed = Settings.Current.ShouldProceed(x => x.NamedParameters);
+
+            if (!shouldProceed)
+            {
+                return;
+            }
+
+            context.RegisterSyntaxNodeAction(SafeAnalyze, SyntaxKind.InvocationExpression, SyntaxKind.ObjectCreationExpression);
+
+
         }
 
         private static void SafeAnalyze(SyntaxNodeAnalysisContext context)

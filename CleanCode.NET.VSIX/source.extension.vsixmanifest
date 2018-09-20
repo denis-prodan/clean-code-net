@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="CleanCode.NET.9ecfa9bb-0775-48d0-9898-4dbbbd529fe3" Version="0.3.1" Language="en-US" Publisher="Denys Prodan" />
+        <Identity Id="CleanCode.NET.9ecfa9bb-0775-48d0-9898-4dbbbd529fe3" Version="0.4.1" Language="en-US" Publisher="Denys Prodan" />
         <DisplayName>Clean Code .NET</DisplayName>
         <Description xml:space="preserve">Clean Code .NET - set of Roslyn analyzers aimed to improve code correctness
 Not affiliated with Bob Martin</Description>
@@ -12,6 +12,7 @@ Not affiliated with Bob Martin</Description>
     </Installation>
     <Dependencies>
         <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+        <Dependency Id="Microsoft.VisualStudio.MPF.15.0" DisplayName="Visual Studio MPF 15.0" d:Source="Installed" Version="[15.0]" />
     </Dependencies>
     <Assets>
         <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="ConstructorNullAnalyzer" Path="|ConstructorNullAnalyzer|" />
@@ -20,6 +21,9 @@ Not affiliated with Bob Martin</Description>
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="NamedParametersAnalyzer" Path="|NamedParametersAnalyzer|" />
         <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="ExceptionsAnalyzer" Path="|ExceptionsAnalyzer|" />
         <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="ExceptionsAnalyzer" Path="|ExceptionsAnalyzer|" />
+        <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
+        <Asset Type="Microsoft.VisualStudio.Analyzer" d:Source="Project" d:ProjectName="SwitchAnalyzer" Path="|SwitchAnalyzer|" />
+        <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="SwitchAnalyzer" Path="|SwitchAnalyzer|" />
     </Assets>
     <Prerequisites>
         <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />

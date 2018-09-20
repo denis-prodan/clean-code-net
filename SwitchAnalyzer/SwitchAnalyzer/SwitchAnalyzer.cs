@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using CleanCode.NET.Common;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -27,10 +28,24 @@ namespace SwitchAnalyzer
 
         public override void Initialize(AnalysisContext context)
         {
-            context.RegisterCodeBlockAction(Action);
+            var shouldProcessEnum = Settings.Current.ShouldProceed(x => x.SwitchEnum);
+            var shouldProcessInterface = Settings.Current.ShouldProceed(x => x.SwitchInterface);
+            var shouldProcessClass = Settings.Current.ShouldProceed(x => x.SwitchClass);
+            if (!(shouldProcessEnum || shouldProcessInterface || shouldProcessClass))
+            {
+                return;
+            }
+
+            context.RegisterCodeBlockAction(AnalyzeBlock);
+
+            void AnalyzeBlock(CodeBlockAnalysisContext con) => SwitchAnalyzer.AnalyzeBlock(
+                context: con, 
+                shouldProcessEnum: shouldProcessEnum, 
+                shouldProcessInterface: shouldProcessInterface, 
+                shouldProcessClass: shouldProcessClass);
         }
 
-        private static void Action(CodeBlockAnalysisContext context)
+        private static void AnalyzeBlock(CodeBlockAnalysisContext context, bool shouldProcessEnum, bool shouldProcessInterface, bool shouldProcessClass)
         {
             var blockSyntaxes = context.CodeBlock.ChildNodes().OfType<BlockSyntax>();
 
@@ -41,7 +56,12 @@ namespace SwitchAnalyzer
                 try
                 {
 
-                    CheckSwitch(switchStatement, context);
+                    CheckSwitch(
+                        switchStatement: switchStatement, 
+                        context: context, 
+                        shouldProcessEnum: shouldProcessEnum, 
+                        shouldProcessInterface: shouldProcessInterface, 
+                        shouldProcessClass: shouldProcessClass);
                 }
                 catch (Exception e)
                 {
@@ -55,7 +75,7 @@ namespace SwitchAnalyzer
             }
         }
 
-        private static void CheckSwitch(SwitchStatementSyntax switchStatement, CodeBlockAnalysisContext context)
+        private static void CheckSwitch(SwitchStatementSyntax switchStatement, CodeBlockAnalysisContext context, bool shouldProcessEnum, bool shouldProcessInterface, bool shouldProcessClass)
         {
             var expression = switchStatement.Expression;
             var typeInfo = context.SemanticModel.GetTypeInfo(expression);
@@ -63,7 +83,7 @@ namespace SwitchAnalyzer
             var switchCases = switchStatement.Sections;
             var switchLocationStart = switchStatement.GetLocation().SourceSpan.Start;
 
-            if (expressionType.TypeKind == TypeKind.Enum)
+            if (expressionType.TypeKind == TypeKind.Enum && shouldProcessEnum)
             {
                 bool ShouldProceed() => EnumAnalyzer.ShouldProceedWithChecks(switchCases);
                 IEnumerable<string> CaseImplementations() => EnumAnalyzer.CaseIdentifiers(switchCases);
@@ -122,7 +142,7 @@ namespace SwitchAnalyzer
                 }
             }
 
-            if (expressionType.TypeKind == TypeKind.Interface)
+            if (expressionType.TypeKind == TypeKind.Interface && shouldProcessInterface)
             {
                 bool ShouldProceed() => InterfaceAnalyzer.ShouldProceedWithChecks(switchCases);
                 IEnumerable<SwitchArgumentTypeItem<string>> AllImplementations() => InterfaceAnalyzer.GetAllImplementationNames(switchLocationStart, expressionType, context.SemanticModel);
@@ -131,7 +151,7 @@ namespace SwitchAnalyzer
                 ProcessSwitch(ShouldProceed, AllImplementations, CaseImplementations, InterfaceAnalyzer.Rule);
             }
 
-            if (expressionType.TypeKind == TypeKind.Class)
+            if (expressionType.TypeKind == TypeKind.Class && shouldProcessClass)
             {
                 bool ShouldProceed() => ClassAnalyzer.ShouldProceedWithChecks(switchCases, expressionType.Name);
                 IEnumerable<SwitchArgumentTypeItem<string>> AllImplementations() => ClassAnalyzer.GetAllImplementationNames(switchLocationStart, expressionType, context.SemanticModel);
