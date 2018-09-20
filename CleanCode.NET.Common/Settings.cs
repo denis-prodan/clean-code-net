@@ -1,4 +1,6 @@
-﻿namespace CleanCode.NET.Common
+﻿using System;
+
+namespace CleanCode.NET.Common
 {
     public class Settings
     {
@@ -8,12 +10,27 @@
 
         public bool IsInitialized { get; set; }
 
-        public Severity SwitchEnumSeverity { get; set; }
+        public bool SwitchEnum { get; set; }
 
-        public Severity SwitchInterfaceSeverity { get; set; }
+        public bool SwitchInterface { get; set; }
 
-        public Severity SwitchClassSeverity { get; set; }
+        public bool SwitchClass { get; set; }
 
-        public Severity ExceptionsSeverity { get; set; }
+        public bool ExceptionsNoCheck { get; set; }
+
+        public bool ExceptionsRethrowSame { get; set; }
+
+        public bool ExceptionsRwthrowWithoutInner { get; set; }
+
+        public bool ConstructoNullCheck { get; set; }
+
+        public bool NamedParameters { get; set; }
+
+        /// <summary>
+        /// If not initialized, then should process. Otherwise, use setting.
+        /// </summary>
+        /// <param name="getter">Setting getter.</param>
+        /// <returns></returns>
+        public bool ShouldProceed(Func<Settings, bool> getter) => getter.Invoke(this) || !IsInitialized;
     }
 }

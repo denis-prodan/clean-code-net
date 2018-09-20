@@ -21,14 +21,19 @@ namespace ExceptionsAnalyzer
 
         public override void Initialize(AnalysisContext context)
         {
-            if (Settings.Current.IsInitialized && Settings.Current.ExceptionsSeverity == Severity.Ignore)
+            var proceedNoCheck = Settings.Current.ShouldProceed(x => x.ExceptionsNoCheck);
+            var proceedRethrow = Settings.Current.ShouldProceed(x => x.ExceptionsRethrowSame);
+            var proceedNoInner = Settings.Current.ShouldProceed(x => x.ExceptionsRwthrowWithoutInner);
+            if (!(proceedNoCheck || proceedRethrow || proceedRethrow))
             {
                 return;
             }
-            context.RegisterSyntaxNodeAction(AnalyzeSymbol,SyntaxKind.TryStatement);
+            context.RegisterSyntaxNodeAction(Analyze, SyntaxKind.TryStatement);
+
+            void Analyze(SyntaxNodeAnalysisContext con) => AnalyzeSymbol(con, proceedNoCheck, proceedRethrow, proceedNoInner);
         }
 
-        private static void AnalyzeSymbol(SyntaxNodeAnalysisContext context)
+        private static void AnalyzeSymbol(SyntaxNodeAnalysisContext context, bool proceedNoCheck, bool proceedRethrow, bool proceedNoInner)
         {
             try
             {
@@ -36,6 +41,12 @@ namespace ExceptionsAnalyzer
 
                 var diagnostics = tryStatement.Catches.Select(AnalyzeCatch)
                     .Where(x => x != null);
+                if (!proceedNoCheck)
+                    diagnostics = diagnostics.Where(x => x.Id != Descriptors.NoExceptionUsageId);
+                if (!proceedRethrow)
+                    diagnostics = diagnostics.Where(x => x.Id != Descriptors.RethrowSameExceptionId);
+                if (!proceedNoInner)
+                    diagnostics = diagnostics.Where(x => x.Id != Descriptors.RethrowWithoutInnerExceptionId);
 
                 foreach (var analysisResult in diagnostics)
                 {

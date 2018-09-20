@@ -20,7 +20,7 @@ namespace ExceptionsAnalyzer
             description: NoExceptionUsageMessage);
 
         public const string RethrowSameExceptionId = "CCN0022";
-        public static readonly string RethrowSameExceptionMessage = "Rethrow same exception lead to lost of call stack";
+        public static readonly string RethrowSameExceptionMessage = "Rethrow same exception leads to lost of call stack";
         internal static readonly DiagnosticDescriptor RethrowSameExceptionDescriptor = new DiagnosticDescriptor(
             RethrowSameExceptionId,
             Title, 
@@ -31,13 +31,13 @@ namespace ExceptionsAnalyzer
             description: RethrowSameExceptionMessage);
 
         public const string RethrowWithoutInnerExceptionId = "CCN0023";
-        public static readonly string RethrowWithoutInnerMessage = "Rethrow same exception lead to lost of call stack";
+        public static readonly string RethrowWithoutInnerMessage = "Throw new exception without inner exception leads to lost details";
         internal static readonly DiagnosticDescriptor RethrowWithoutInnerDescriptor = new DiagnosticDescriptor(
             RethrowWithoutInnerExceptionId,
             Title,
             RethrowWithoutInnerMessage, 
             Category, 
-            DiagnosticSeverity.Info,
+            DiagnosticSeverity.Warning,
             isEnabledByDefault: true, 
             description: RethrowWithoutInnerMessage);
 
