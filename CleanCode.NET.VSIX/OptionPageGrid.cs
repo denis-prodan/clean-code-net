@@ -11,42 +11,42 @@ namespace CleanCode.NET
         [Category(Category)]
         [DefaultValue(true)]
         [DisplayName("(CCN0001) Validate switch for enums")]
-        public bool SwitchEnum { get; set; }
+        public bool SwitchEnum { get; set; } = true;
 
         [Category(Category)]
         [DefaultValue(true)]
         [DisplayName("(CCN0002) Validate switch for interfaces")]
-        public bool SwitchInterface { get; set; }
+        public bool SwitchInterface { get; set; } = true;
 
         [Category(Category)]
         [DefaultValue(true)]
         [DisplayName("(CCN0003) Validate switch for classes")]
-        public bool SwitchClass { get; set; }
+        public bool SwitchClass { get; set; } = true;
 
         [Category(Category)]
         [DefaultValue(true)]
         [DisplayName("(CCN0011) Require constructors to have null checks for parameters")]
-        public bool ConstructoNullCheck { get; set; }
+        public bool ConstructoNullCheck { get; set; } = true;
 
         [Category(Category)]
         [DefaultValue(true)]
         [DisplayName("(CCN0021) Exceptions are not used in catch statement")]
-        public bool ExceptionsNoCheck { get; set; }
+        public bool ExceptionsNoCheck { get; set; } = true;
 
         [Category(Category)]
         [DefaultValue(true)]
         [DisplayName("(CCN0022) Exceptions rethrow")]
-        public bool ExceptionsRethrowSame { get; set; }
+        public bool ExceptionsRethrowSame { get; set; } = true;
 
         [Category(Category)]
         [DefaultValue(true)]
         [DisplayName("(CCN0023) Exception rethrow without inner")]
-        public bool ExceptionsRethrowWithoutInner { get; set; }
+        public bool ExceptionsRethrowWithoutInner { get; set; } = true;
 
         [Category(Category)]
         [DefaultValue(true)]
         [DisplayName("(CCN0041) Require to have parameter names")]
-        public bool NamedParameters { get; set; }
+        public bool NamedParameters { get; set; } = true;
 
         protected override void OnApply(PageApplyEventArgs e)
         {
