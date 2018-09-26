@@ -68,7 +68,7 @@ namespace SwitchAnalyzer
                     var diagnostic = Diagnostic.Create(
                         descriptor: AnalyzerErrorDescriptor,
                         location: switchStatement.GetLocation(),
-                        messageArgs: e.ToString());
+                        messageArgs: e);
 
                     context.ReportDiagnostic(diagnostic);
                 }
