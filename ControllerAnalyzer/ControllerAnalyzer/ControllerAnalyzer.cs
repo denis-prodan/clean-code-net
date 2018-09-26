@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
@@ -28,20 +29,40 @@ namespace ControllerAnalyzer
 
         private static void AnalyzeSymbol(SyntaxNodeAnalysisContext context)
         {
-            // TODO: Replace the following code with your own analysis, generating Diagnostic objects for any issues you find
             var classDeclaration = (ClassDeclarationSyntax)context.Node;
-            var a = classDeclaration.ReturnType;
-            var b = classDeclaration.Parameters;
 
-            //var s = (context.Symbol.ContainingSymbol as INamedTypeSymbol);
-            //// Find just those named type symbols with names containing lowercase letters.
-            //if (namedTypeSymbol.Name.ToCharArray().Any(char.IsLower))
-            //{
-            //    // For all such symbols, produce a diagnostic.
-            //    var diagnostic = Diagnostic.Create(Rule, namedTypeSymbol.Locations[0], namedTypeSymbol.Name);
+            // todo: consider more accurate way
+            if (!classDeclaration.Identifier.ValueText.Contains("Controller"))
+            {
+                return;
+            }
 
-            //    context.ReportDiagnostic(diagnostic);
-            //}
+            var classAssembly = classDeclaration.Identifier.
+            var methods = classDeclaration.Members.OfType<MethodDeclarationSyntax>();
+
+            foreach(var method in methods)
+            {
+                ValidateMethod(classAssembly, method);
+            }
+        }
+
+        private static void ValidateMethod(string classAssembly, MethodDeclarationSyntax method)
+        {
+            var a = method.ReturnType;
+            var methodTypes = method.ParameterList.Parameters.SelectMany(x => GetParameterTypes(x));
+
+            var type = a.GetType();
+            if (type.AssemblyQualifiedName == classAssembly 
+                || type.AssemblyQualifiedName.Contains("View")
+                || type.AssemblyQualifiedName.StartsWith("System"))
+            {
+                return;
+            }
+        }
+
+        private static IEnumerable<TypeSyntax> GetParameterTypes(ParameterSyntax parameter)
+        {
+            yield return parameter.Type;
         }
     }
 }
