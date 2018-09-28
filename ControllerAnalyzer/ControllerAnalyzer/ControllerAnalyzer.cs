@@ -28,7 +28,7 @@ namespace ControllerAnalyzer
         }
 
         private static void AnalyzeSymbol(SyntaxNodeAnalysisContext context)
-        {
+        {            
             var classDeclaration = (ClassDeclarationSyntax)context.Node;
 
             // todo: consider more accurate way
@@ -37,32 +37,98 @@ namespace ControllerAnalyzer
                 return;
             }
 
-            var classAssembly = classDeclaration.Identifier.
-            var methods = classDeclaration.Members.OfType<MethodDeclarationSyntax>();
+            var classSymbol = context.SemanticModel.GetDeclaredSymbol(classDeclaration);        
+
+            var methods = classDeclaration.Members
+                .OfType<MethodDeclarationSyntax>()
+                .Where(x => x.Modifiers.Any(modifier => modifier.IsKind(SyntaxKind.PublicKeyword)));
 
             foreach(var method in methods)
             {
-                ValidateMethod(classAssembly, method);
+                ValidateMethod(context, classSymbol, method);
             }
         }
 
-        private static void ValidateMethod(string classAssembly, MethodDeclarationSyntax method)
+        private static void ValidateMethod(SyntaxNodeAnalysisContext context, INamedTypeSymbol classSymbol, MethodDeclarationSyntax method)
         {
-            var a = method.ReturnType;
-            var methodTypes = method.ParameterList.Parameters.SelectMany(x => GetParameterTypes(x));
+            var semanticModel = context.SemanticModel;
+            var returnTypes = GetAllReturnTypes(semanticModel, method).ToList();
 
-            var type = a.GetType();
-            if (type.AssemblyQualifiedName == classAssembly 
-                || type.AssemblyQualifiedName.Contains("View")
-                || type.AssemblyQualifiedName.StartsWith("System"))
+            var validatedReturns = returnTypes.Select(x => (parameter: x.node, type: x.typeSymbol, valid: ValidateSymbol(classSymbol, x.typeSymbol))).ToList();
+            var validatedParams = method.ParameterList.Parameters.Select(x => (parameter: x, valid: ValidateParameter(semanticModel, classSymbol, x))).ToList();  
+            
+            foreach (var returnResult in validatedReturns.Where(x => !x.valid))
             {
-                return;
+                
+
+                var diagnostic = Diagnostic.Create(
+                    descriptor: Rule,
+                    location: method.GetLocation(),
+                    additionalLocations: new[] { returnResult.parameter.GetLocation() },
+                    properties: new Dictionary<string, string>().ToImmutableDictionary(),
+                    effectiveSeverity: DiagnosticSeverity.Warning, 
+                    messageArgs: returnResult.type.Name);
+                context.ReportDiagnostic(diagnostic);
+            }
+
+            foreach (var paramResult in validatedParams.Where(x => !x.valid))
+            {
+                var diag = Diagnostic.Create(Rule, method.GetLocation(), "");
+                context.ReportDiagnostic(diag);
+
+                var diagnostic = Diagnostic.Create(
+                    descriptor: Rule,
+                    location: method.GetLocation(),
+                    additionalLocations: new[] { paramResult.parameter.GetLocation() },
+                    properties: new Dictionary<string, string>().ToImmutableDictionary(),
+                    effectiveSeverity: DiagnosticSeverity.Warning,
+                    messageArgs: "");
+                context.ReportDiagnostic(diagnostic);
             }
         }
 
-        private static IEnumerable<TypeSyntax> GetParameterTypes(ParameterSyntax parameter)
+        private static IEnumerable<(SyntaxNode node, ITypeSymbol typeSymbol)> GetAllReturnTypes(SemanticModel semanticModel, MethodDeclarationSyntax method)
         {
-            yield return parameter.Type;
+            yield return (method.ReturnType, semanticModel.GetDeclaredSymbol(method).ReturnType);
+
+            var returnStatements = method.Body.DescendantNodes().OfType<ReturnStatementSyntax>();
+            var resultInnerArguments = returnStatements.SelectMany(x => GetReturnStatementParameterNodes(semanticModel, x));
+
+            var resultInnerTypes = resultInnerArguments.Select(x => (node: x, typeInfo: semanticModel.GetTypeInfo(x.Expression)));
+
+            foreach (var resultType in resultInnerTypes)
+            {
+                yield return (resultType.node, typeSymbol: resultType.typeInfo.Type);
+            }
+         }
+
+        private static IEnumerable<ArgumentSyntax> GetReturnStatementParameterNodes(SemanticModel semanticModel, ReturnStatementSyntax returnStatement)
+        {
+            if (returnStatement.Expression is InvocationExpressionSyntax invocationExpression)
+            {
+                return invocationExpression.ArgumentList.Arguments;
+            }
+
+            return new ArgumentSyntax[0];
+        }
+
+        private static bool ValidateParameter(SemanticModel semanticModel, INamedTypeSymbol classSymbol, ParameterSyntax parameter)
+        {
+            var symbol = semanticModel.GetDeclaredSymbol(parameter);
+
+            return ValidateSymbol(classSymbol, symbol.Type);
+        }
+
+        private static bool ValidateSymbol(INamedTypeSymbol classSymbol, ITypeSymbol symbol)
+        {
+            if (symbol.ContainingAssembly == classSymbol.ContainingAssembly
+               || symbol.ContainingAssembly.Name.Contains("View")
+               || symbol.ContainingAssembly.Name.StartsWith("System"))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }
