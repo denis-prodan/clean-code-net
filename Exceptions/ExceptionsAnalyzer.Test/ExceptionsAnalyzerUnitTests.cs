@@ -95,9 +95,22 @@ namespace ConsoleApp1
             }";
             var code = BuildCode(test);
 
-            var expected = GetDiagnostic(Descriptors.RethrowWithoutInnerExceptionId, Descriptors.RethrowWithoutInnerMessage, DiagnosticSeverity.Info);
+            var expected = GetDiagnostic(Descriptors.RethrowWithoutInnerExceptionId, Descriptors.RethrowWithoutInnerMessage, DiagnosticSeverity.Warning);
 
             VerifyCSharpDiagnostic(code, expected);
+        }
+
+        [TestMethod]
+        public void LogCorrect()
+        {
+            var test = @"
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }";
+            var code = BuildCode(test);
+
+            VerifyCSharpDiagnostic(code);
         }
 
         private DiagnosticResult GetDiagnostic(string diagnosticId, string description, DiagnosticSeverity severity = DiagnosticSeverity.Warning)

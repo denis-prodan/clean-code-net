@@ -13,11 +13,13 @@ namespace ExceptionsAnalyzer
     public class ExceptionsAnalyzer : DiagnosticAnalyzer
     {
         public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics =>
-            ImmutableArray.Create(
+            ImmutableArray.Create(new[]
+            {
                 Descriptors.NoExceptionUsageDescriptor,
                 Descriptors.RethrowSameExceptionDescriptor,
                 Descriptors.RethrowWithoutInnerDescriptor,
-                Descriptors.ExceptionAnalyzerErrorDescriptor);
+                Descriptors.ExceptionAnalyzerErrorDescriptor
+            });
 
         public override void Initialize(AnalysisContext context)
         {
@@ -30,7 +32,11 @@ namespace ExceptionsAnalyzer
             }
             context.RegisterSyntaxNodeAction(Analyze, SyntaxKind.TryStatement);
 
-            void Analyze(SyntaxNodeAnalysisContext con) => AnalyzeSymbol(con, proceedNoCheck, proceedRethrow, proceedNoInner);
+            void Analyze(SyntaxNodeAnalysisContext con) => AnalyzeSymbol(
+                context: con,
+                proceedNoCheck: proceedNoCheck,
+                proceedRethrow: proceedRethrow,
+                proceedNoInner: proceedNoInner);
         }
 
         private static void AnalyzeSymbol(SyntaxNodeAnalysisContext context, bool proceedNoCheck, bool proceedRethrow, bool proceedNoInner)
@@ -137,7 +143,13 @@ namespace ExceptionsAnalyzer
         {
             if (expression is InvocationExpressionSyntax invocation)
             {
-                return invocation.ArgumentList.Arguments.Any(x => IsVariableUsedInExpression(variableName, x.Expression));
+                var isUsedAsIdentifier = IsVariableUsedInExpression(variableName, invocation.Expression);
+                return isUsedAsIdentifier || invocation.ArgumentList.Arguments.Any(x => IsVariableUsedInExpression(variableName, x.Expression));
+            }
+
+            if (expression is MemberAccessExpressionSyntax memberAccess)
+            {
+                return IsVariableUsedInExpression(variableName, memberAccess.Expression);
             }
 
             if (expression is IdentifierNameSyntax identifierName)
