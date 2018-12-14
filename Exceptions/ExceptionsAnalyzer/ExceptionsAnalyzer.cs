@@ -74,6 +74,12 @@ namespace ExceptionsAnalyzer
         {
             var variableName = GetCatchDeclarationVariableName(catchSyntax);
 
+            // if specific exception type used, but no variable, assume that this is intentional handling.
+            if (variableName == null)
+            {
+                return null;
+            }
+
             var catchAnalysisResults = catchSyntax.Block.Statements
                 .Select(x => (node: x, result:IsVariableUsedInStatement(variableName, x)))
                 .Distinct()
