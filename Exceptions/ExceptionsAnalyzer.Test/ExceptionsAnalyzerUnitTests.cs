@@ -48,6 +48,31 @@ namespace ConsoleApp1
         }
 
         [TestMethod]
+        public void SwallowException()
+        {
+            var test = @"
+            catch
+            {
+            }";
+            var code = BuildCode(test);
+
+            var expected = new DiagnosticResult
+            {
+                Id = Descriptors.NoExceptionUsageId,
+                Message = Descriptors.NoExceptionUsageMessage,
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 14, 13)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(code, expected);
+        }
+
+
+        [TestMethod]
         public void ExceptionUsedInCatch()
         {
             var test = @"
@@ -101,12 +126,25 @@ namespace ConsoleApp1
         }
 
         [TestMethod]
-        public void LogCorrect()
+        public void ExceptionDetailsVerifiedCorrect()
         {
             var test = @"
             catch(Exception e)
             {
                 Console.WriteLine(e.ToString());
+            }";
+            var code = BuildCode(test);
+
+            VerifyCSharpDiagnostic(code);
+        }
+
+        [TestMethod]
+        public void NoVariableName_Correct()
+        {
+            var test = @"
+            catch (FileNotFoundException)
+            {
+                return;
             }";
             var code = BuildCode(test);
 
