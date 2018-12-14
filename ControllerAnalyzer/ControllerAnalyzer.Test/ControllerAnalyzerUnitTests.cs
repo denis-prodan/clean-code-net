@@ -3,15 +3,14 @@ using Microsoft.CodeAnalysis.CodeFixes;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using TestHelper;
 using ControllerAnalyzer;
+using TestCommon;
 
 namespace ControllerAnalyzer.Test
 {
     [TestClass]
     public class UnitTest : CodeFixVerifier
     {
-
         //No diagnostics expected to show up
         [TestMethod]
         public void TestMethod1()
@@ -42,7 +41,7 @@ namespace ControllerAnalyzer.Test
             var expected = new DiagnosticResult
             {
                 Id = "ControllerAnalyzer",
-                Message = String.Format("Type name '{0}' contains lowercase letters", "TypeName"),
+                Message = $"Type name '{"TypeName"}' contains lowercase letters",
                 Severity = DiagnosticSeverity.Warning,
                 Locations =
                     new[] {

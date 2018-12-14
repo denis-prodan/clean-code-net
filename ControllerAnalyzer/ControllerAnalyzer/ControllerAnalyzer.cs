@@ -13,7 +13,7 @@ namespace ControllerAnalyzer
     {
         public const string DiagnosticId = "CN0041";
 
-        private static readonly string Title = "Controller methods should not return or accept classes for other assemblies";
+        private static readonly string Title = "Controller methods should not return or accept classes from other assemblies";
         private static readonly string MessageFormat = "Method {0} returns/accepts classes from another assembly";
         private static readonly string Description = "Using classes from another assembly that doesn't contain only external models considered as bad practice and layer mixing.";
         private const string Category = "Conventions";
