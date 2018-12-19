@@ -41,7 +41,7 @@ namespace ExceptionsAnalyzer
             isEnabledByDefault: true, 
             description: RethrowWithoutInnerMessage);
 
-        internal const string ExceptionAnalyzerErrorId = "CCN0000";
+        internal const string ExceptionAnalyzerErrorId = "CCN0020";
         private static readonly string ExceptionAnalyzerErrorMessage = "Exception analyzer internal error. Please contact author";
         internal static readonly DiagnosticDescriptor ExceptionAnalyzerErrorDescriptor = new DiagnosticDescriptor(
             id: ExceptionAnalyzerErrorId,
