@@ -139,6 +139,32 @@ namespace ConsoleApp1
         }
 
         [TestMethod]
+        public void ExceptionUsedInReturn()
+        {
+            var test = @"
+            catch(Exception e)
+            {
+               return $""Exception happened {e}"";
+            }";
+            var code = BuildCode(test);
+
+            VerifyCSharpDiagnostic(code);
+        }
+
+        [TestMethod]
+        public void ExceptionUsedInStringInterpolation()
+        {
+            var test = @"
+            catch(Exception e)
+            {
+                Console.WriteLine($""Exception happened {e}"");
+            }";
+            var code = BuildCode(test);
+
+            VerifyCSharpDiagnostic(code);
+        }
+
+        [TestMethod]
         public void NoVariableName_Correct()
         {
             var test = @"

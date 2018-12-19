@@ -142,6 +142,13 @@ namespace ExceptionsAnalyzer
                 }
             }
 
+            if (statement is ReturnStatementSyntax returnStatement)
+            {
+                return IsVariableUsedInExpression(variableName, returnStatement.Expression)
+                    ? StatementAnalysisResult.Used
+                    : StatementAnalysisResult.NoUsage;
+            }
+
             throw new NotImplementedException($"Unknown statement type {statement}");
         }
 
@@ -166,6 +173,13 @@ namespace ExceptionsAnalyzer
             if (expression is ObjectCreationExpressionSyntax creation)
             {
                 return creation.ArgumentList.Arguments.Any(x => IsVariableUsedInExpression(variableName, x.Expression));
+            }
+
+            if (expression is InterpolatedStringExpressionSyntax interpolatedString)
+            {
+                return interpolatedString.Contents
+                    .OfType<InterpolationSyntax>()
+                    .Any(x => IsVariableUsedInExpression(variableName, x.Expression));
             }
 
             return false;
