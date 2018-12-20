@@ -269,6 +269,57 @@ namespace ConsoleApp1
             VerifyCSharpDiagnostic(code);
         }
 
+        [TestMethod]
+        public void InnerTryCatch_Correct()
+        {
+            var test = @"
+            catch (Exception e)
+            {
+                try
+                {
+                    Console.WriteLine($""Exception happened! {e}"");
+                }
+                catch
+                {
+                    throw;
+                }
+            }";
+            var code = BuildCode(test);
+
+            VerifyCSharpDiagnostic(code);
+        }
+
+        [TestMethod]
+        public void InnerTryCatch_Incorrect()
+        {
+            var test = @"
+            catch (Exception e)
+            {
+                try
+                {
+                    var k = e;
+                }
+                catch(Exception inner)
+                {
+                    throw new Exception();
+                }
+            }";
+            var code = BuildCode(test);
+
+            var expected = new DiagnosticResult
+            {
+                Id = Descriptors.RethrowWithoutInnerExceptionId,
+                Message = Descriptors.RethrowWithoutInnerMessage,
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 20, 17)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(code, expected);
+        }
 
         private DiagnosticResult GetDiagnostic(string diagnosticId, string description, DiagnosticSeverity severity = DiagnosticSeverity.Warning)
         {

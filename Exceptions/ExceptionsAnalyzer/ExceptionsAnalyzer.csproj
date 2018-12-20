@@ -8,7 +8,7 @@
 
   <PropertyGroup>
     <PackageId>ExceptionsAnalyzer</PackageId>
-    <PackageVersion>0.1.4.0</PackageVersion>
+    <PackageVersion>0.1.5.0</PackageVersion>
     <Authors>Denys Prodan</Authors>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/denis-prodan/clean-code-net</PackageProjectUrl>
@@ -19,12 +19,12 @@
 throw ex - leads to lost stack trace
 Not used exception object
 Rethrow new exception without inner exception</Description>
-    <PackageReleaseNotes>#9 Fix bug with not processed if statements in catch clause.</PackageReleaseNotes>
+    <PackageReleaseNotes>#9 Fix bug with not processed try-catch catch clause. Fix null reference exception.</PackageReleaseNotes>
     <Copyright></Copyright>
     <PackageTags>ExceptionsAnalyzer, analyzers</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <LangVersion>latest</LangVersion>
-    <Version>0.1.4</Version>
+    <Version>0.1.5</Version>
     <Product>Exceptions Analyzer</Product>
   </PropertyGroup>
 
