@@ -108,87 +108,129 @@ namespace ExceptionsAnalyzer
         {
             if (statement is ExpressionStatementSyntax expression)
             {
-                return IsVariableUsedInExpression(variableName, expression.Expression) 
-                    ? StatementAnalysisResult.Used 
-                    : StatementAnalysisResult.NoUsage;
+                return IsVariableUsedInExpression(variableName, expression);
             }
 
             if (statement is LocalDeclarationStatementSyntax localDeclaration)
             {
-               return localDeclaration.Declaration.Variables.Any(x => IsVariableUsedInExpression(variableName, x.Initializer.Value))
-                   ? StatementAnalysisResult.Used
-                   : StatementAnalysisResult.NoUsage;
+                return IsVariableUsedInLocalDeclaration(variableName, localDeclaration);
             }
 
             if (statement is ThrowStatementSyntax throwStatement)
             {
-                // "throw;" statement, good rethrow
-                if (throwStatement.Expression == null)
-                    return StatementAnalysisResult.CorrectRethrow;
-                if (throwStatement.Expression != null)
-                {
-                    if (throwStatement.Expression is IdentifierNameSyntax identifier)
-                    {
-                        if (identifier.Identifier.ValueText == variableName)
-                        {
-                            // "throw e" - leads to lost stack trace
-                            return StatementAnalysisResult.RethrowSameException;
-                        }
-                    }
-
-                    return IsVariableUsedInExpression(variableName, throwStatement.Expression)
-                        ? StatementAnalysisResult.CorrectRethrow // Rethrow with inner exception
-                        : StatementAnalysisResult.RethrowWithoutInnerException;
-                }
+                return IsVariableUsedInThrow(variableName, throwStatement);
             }
 
             if (statement is ReturnStatementSyntax returnStatement)
             {
-                return IsVariableUsedInExpression(variableName, returnStatement.Expression)
-                    ? StatementAnalysisResult.Used
-                    : StatementAnalysisResult.NoUsage;
+                return IsVariableUsedInReturn(variableName, returnStatement);
             }
 
             if (statement is BlockSyntax blockStatement)
             {
-                var statementsResults = blockStatement.Statements.Select(x => IsVariableUsedInStatement(variableName, x)).ToList();
-               
-                var wrongUsageStatement = statementsResults.FirstOrDefault(x => x < StatementAnalysisResult.NoUsage);
-                if (wrongUsageStatement != StatementAnalysisResult.Undefined)
-                    return wrongUsageStatement;
-
-                var correctUsageStatement = statementsResults.FirstOrDefault(x => x > StatementAnalysisResult.NoUsage);
-                if (correctUsageStatement != StatementAnalysisResult.Undefined)
-                    return correctUsageStatement;
-
-                return StatementAnalysisResult.NoUsage;
+                return IsVariableUSedInBlock(variableName, blockStatement);
             }
 
             if (statement is IfStatementSyntax ifStatement)
             {
-                // negative cases
-                var statementUsage = IsVariableUsedInStatement(variableName, ifStatement.Statement);
-                if (statementUsage < StatementAnalysisResult.NoUsage)
-                    return statementUsage;
+                return IsVariableUsedInIf(variableName, ifStatement);
+            }
 
-                var elseUsage = IsVariableUsedInStatement(variableName, ifStatement.Else.Statement);
-                if (elseUsage < StatementAnalysisResult.NoUsage)
-                    return elseUsage;
-
-                // positive cases
-                if (statementUsage > StatementAnalysisResult.NoUsage)
-                    return statementUsage;
-                if (elseUsage > StatementAnalysisResult.NoUsage)
-                    return elseUsage;
-
-                // final decision if none above
-                var condiitionUsage = IsVariableUsedInExpression(variableName, ifStatement.Condition);
-                return condiitionUsage 
-                    ? StatementAnalysisResult.Used
-                    : StatementAnalysisResult.NoUsage;
+            if (statement is TryStatementSyntax tryStatement)
+            {
+                return IsVariableUsedInStatement(variableName, tryStatement.Block);
             }
 
             throw new NotImplementedException($"Unknown statement type {statement}");
+        }
+
+        private static StatementAnalysisResult IsVariableUsedInThrow(string variableName,
+            ThrowStatementSyntax throwStatementSyntax)
+        {
+            // "throw;" statement, good rethrow
+            if (throwStatementSyntax.Expression == null)
+                return StatementAnalysisResult.CorrectRethrow;
+
+            if (throwStatementSyntax.Expression is IdentifierNameSyntax identifier)
+            {
+                if (identifier.Identifier.ValueText == variableName)
+                {
+                    // "throw e" - leads to lost stack trace
+                    return StatementAnalysisResult.RethrowSameException;
+                }
+            }
+
+            return IsVariableUsedInExpression(variableName, throwStatementSyntax.Expression)
+                ? StatementAnalysisResult.CorrectRethrow // Rethrow with inner exception
+                : StatementAnalysisResult.RethrowWithoutInnerException;
+        }
+
+        private static StatementAnalysisResult IsVariableUsedInIf(string variableName,
+            IfStatementSyntax ifStatementSyntax)
+        {
+            // negative cases
+            var statementUsage = IsVariableUsedInStatement(variableName, ifStatementSyntax.Statement);
+            if (statementUsage < StatementAnalysisResult.NoUsage)
+                return statementUsage;
+
+            var elseUsage = IsVariableUsedInStatement(variableName, ifStatementSyntax.Else.Statement);
+            if (elseUsage < StatementAnalysisResult.NoUsage)
+                return elseUsage;
+
+            // positive cases
+            if (statementUsage > StatementAnalysisResult.NoUsage)
+                return statementUsage;
+            if (elseUsage > StatementAnalysisResult.NoUsage)
+                return elseUsage;
+
+            // final decision if none above
+            var condiitionUsage = IsVariableUsedInExpression(variableName, ifStatementSyntax.Condition);
+            return condiitionUsage
+                ? StatementAnalysisResult.Used
+                : StatementAnalysisResult.NoUsage;
+        }
+
+        private static StatementAnalysisResult IsVariableUSedInBlock(string variableName, BlockSyntax blockSyntax)
+        {
+            var statementsResults = blockSyntax.Statements.Select(x => IsVariableUsedInStatement(variableName, x)).ToList();
+
+            var wrongUsageStatement = statementsResults.FirstOrDefault(x => x < StatementAnalysisResult.NoUsage);
+            if (wrongUsageStatement != StatementAnalysisResult.Undefined)
+                return wrongUsageStatement;
+
+            var correctUsageStatement = statementsResults.FirstOrDefault(x => x > StatementAnalysisResult.NoUsage);
+            if (correctUsageStatement != StatementAnalysisResult.Undefined)
+                return correctUsageStatement;
+
+            return StatementAnalysisResult.NoUsage;
+        }
+
+        private static StatementAnalysisResult IsVariableUsedInReturn(string variableName,
+            ReturnStatementSyntax returnStatementSyntax)
+        {
+            return IsVariableUsedInExpression(variableName, returnStatementSyntax.Expression)
+                ? StatementAnalysisResult.Used
+                : StatementAnalysisResult.NoUsage;
+        }
+
+        private static StatementAnalysisResult IsVariableUsedInLocalDeclaration(string variableName,
+            LocalDeclarationStatementSyntax localDeclarationStatementSyntax)
+        {
+            return localDeclarationStatementSyntax.Declaration.Variables.Any(x =>
+                IsVariableUsedInExpression(variableName, x.Initializer.Value))
+                ? StatementAnalysisResult.Used
+                : StatementAnalysisResult.NoUsage;
+        }
+
+        private static StatementAnalysisResult IsVariableUsedInExpression(string variableName,
+            ExpressionStatementSyntax expressionStatementSyntax)
+        {
+            if (expressionStatementSyntax.Expression == null)
+                return StatementAnalysisResult.NoUsage;
+
+            return IsVariableUsedInExpression(variableName, expressionStatementSyntax.Expression)
+                ? StatementAnalysisResult.Used
+                : StatementAnalysisResult.NoUsage;
         }
 
         private static bool IsVariableUsedInExpression(string variableName, ExpressionSyntax expression)
