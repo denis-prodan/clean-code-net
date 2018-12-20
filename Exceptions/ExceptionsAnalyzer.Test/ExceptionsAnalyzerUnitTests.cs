@@ -86,6 +86,98 @@ namespace ConsoleApp1
         }
 
         [TestMethod]
+        public void IfThenInCatch()
+        {
+            var test = @"
+            catch(Exception e)
+            {
+                if (true)
+                {
+                    throw;
+                }
+                else
+                {
+                    // something
+                }
+            }";
+            var code = BuildCode(test);
+
+            VerifyCSharpDiagnostic(code);
+        }
+
+        [TestMethod]
+        public void IfElseInCatch()
+        {
+            var test = @"
+            catch(Exception e)
+            {
+                if (true)
+                {
+                    // something
+                }
+                else
+                {
+                    throw;
+                }
+            }";
+            var code = BuildCode(test);
+
+            VerifyCSharpDiagnostic(code);
+        }
+
+        [TestMethod]
+        public void IfConditionInCatch()
+        {
+            var test = @"
+            catch(Exception e)
+            {
+                if (string.IsNullOrEmpty(e.Message))
+                {
+                    // something
+                }
+                else
+                {
+                    // something
+                }
+            }";
+            var code = BuildCode(test);
+
+            VerifyCSharpDiagnostic(code);
+        }
+
+        [TestMethod]
+        public void IfElseIncorrectRethrowInCatch()
+        {
+            var test = @"
+            catch(Exception e)
+            {
+                if (string.IsNullOrEmpty(e.Message))
+                {
+                    throw;
+                }
+                else
+                {
+                    throw new Exception();
+                }
+            }";
+            var code = BuildCode(test);
+
+            var expected = new DiagnosticResult
+            {
+                Id = Descriptors.RethrowWithoutInnerExceptionId,
+                Message = Descriptors.RethrowWithoutInnerMessage,
+                Severity = DiagnosticSeverity.Warning,
+                Locations =
+                    new[]
+                    {
+                        new DiagnosticResultLocation("Test0.cs", 14, 13)
+                    }
+            };
+
+            VerifyCSharpDiagnostic(code, expected);
+        }
+
+        [TestMethod]
         public void IncorrectRethrow()
         {
             var test = @"
@@ -176,6 +268,7 @@ namespace ConsoleApp1
 
             VerifyCSharpDiagnostic(code);
         }
+
 
         private DiagnosticResult GetDiagnostic(string diagnosticId, string description, DiagnosticSeverity severity = DiagnosticSeverity.Warning)
         {

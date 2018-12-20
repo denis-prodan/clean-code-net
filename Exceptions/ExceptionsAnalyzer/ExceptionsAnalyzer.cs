@@ -149,6 +149,45 @@ namespace ExceptionsAnalyzer
                     : StatementAnalysisResult.NoUsage;
             }
 
+            if (statement is BlockSyntax blockStatement)
+            {
+                var statementsResults = blockStatement.Statements.Select(x => IsVariableUsedInStatement(variableName, x)).ToList();
+               
+                var wrongUsageStatement = statementsResults.FirstOrDefault(x => x < StatementAnalysisResult.NoUsage);
+                if (wrongUsageStatement != StatementAnalysisResult.Undefined)
+                    return wrongUsageStatement;
+
+                var correctUsageStatement = statementsResults.FirstOrDefault(x => x > StatementAnalysisResult.NoUsage);
+                if (correctUsageStatement != StatementAnalysisResult.Undefined)
+                    return correctUsageStatement;
+
+                return StatementAnalysisResult.NoUsage;
+            }
+
+            if (statement is IfStatementSyntax ifStatement)
+            {
+                // negative cases
+                var statementUsage = IsVariableUsedInStatement(variableName, ifStatement.Statement);
+                if (statementUsage < StatementAnalysisResult.NoUsage)
+                    return statementUsage;
+
+                var elseUsage = IsVariableUsedInStatement(variableName, ifStatement.Else.Statement);
+                if (elseUsage < StatementAnalysisResult.NoUsage)
+                    return elseUsage;
+
+                // positive cases
+                if (statementUsage > StatementAnalysisResult.NoUsage)
+                    return statementUsage;
+                if (elseUsage > StatementAnalysisResult.NoUsage)
+                    return elseUsage;
+
+                // final decision if none above
+                var condiitionUsage = IsVariableUsedInExpression(variableName, ifStatement.Condition);
+                return condiitionUsage 
+                    ? StatementAnalysisResult.Used
+                    : StatementAnalysisResult.NoUsage;
+            }
+
             throw new NotImplementedException($"Unknown statement type {statement}");
         }
 
