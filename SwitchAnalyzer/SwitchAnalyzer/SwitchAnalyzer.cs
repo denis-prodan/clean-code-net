@@ -164,15 +164,15 @@ namespace SwitchAnalyzer
 
             var allImplementations = allImplementationsFunc().ToList();
 
-            var obj = new object();
             var caseImplementations = caseImplementationFunc().ToImmutableHashSet();
 
             var checkedValues = allImplementations
                 .Where(expectedValue => caseImplementations.Contains(expectedValue.FullName))
+                .Select(x => x.Value)
                 .ToImmutableHashSet();
 
             var notCheckedValues = allImplementations.Where(x =>
-                !checkedValues.Contains(x))
+                !checkedValues.Contains(x.Value))
                 .OrderBy(x => x.FullName)
                 .ToList();
 
