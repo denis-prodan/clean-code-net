@@ -36,49 +36,20 @@ namespace SwitchAnalyzer
                 return;
             }
 
-            context.RegisterCodeBlockAction(AnalyzeBlock);
+            context.RegisterOperationAction(AnalyzeSwitch, OperationKind.Switch);
 
-            void AnalyzeBlock(CodeBlockAnalysisContext con) => SwitchAnalyzer.AnalyzeBlock(
-                context: con, 
-                shouldProcessEnum: shouldProcessEnum, 
-                shouldProcessInterface: shouldProcessInterface, 
+            void AnalyzeSwitch(OperationAnalysisContext con) => CheckSwitch(
+                switchStatement: con.Operation.Syntax as SwitchStatementSyntax,
+                context: con,
+                shouldProcessEnum: shouldProcessEnum,
+                shouldProcessInterface: shouldProcessInterface,
                 shouldProcessClass: shouldProcessClass);
         }
 
-        private static void AnalyzeBlock(CodeBlockAnalysisContext context, bool shouldProcessEnum, bool shouldProcessInterface, bool shouldProcessClass)
-        {
-            var blockSyntaxes = context.CodeBlock.ChildNodes().OfType<BlockSyntax>();
-
-            var switchStatements = blockSyntaxes.SelectMany(x => x.Statements.OfType<SwitchStatementSyntax>());
-
-            foreach (var switchStatement in switchStatements)
-            {
-                try
-                {
-
-                    CheckSwitch(
-                        switchStatement: switchStatement, 
-                        context: context, 
-                        shouldProcessEnum: shouldProcessEnum, 
-                        shouldProcessInterface: shouldProcessInterface, 
-                        shouldProcessClass: shouldProcessClass);
-                }
-                catch (Exception e)
-                {
-                    var diagnostic = Diagnostic.Create(
-                        descriptor: AnalyzerErrorDescriptor,
-                        location: switchStatement.GetLocation(),
-                        messageArgs: e.ToString());
-
-                    context.ReportDiagnostic(diagnostic);
-                }
-            }
-        }
-
-        private static void CheckSwitch(SwitchStatementSyntax switchStatement, CodeBlockAnalysisContext context, bool shouldProcessEnum, bool shouldProcessInterface, bool shouldProcessClass)
+        private static void CheckSwitch(SwitchStatementSyntax switchStatement, OperationAnalysisContext context, bool shouldProcessEnum, bool shouldProcessInterface, bool shouldProcessClass)
         {
             var expression = switchStatement.Expression;
-            var typeInfo = context.SemanticModel.GetTypeInfo(expression);
+            var typeInfo = context.Operation.SemanticModel.GetTypeInfo(expression);
             var expressionType = typeInfo.ConvertedType;
             var switchCases = switchStatement.Sections;
             var switchLocationStart = switchStatement.GetLocation().SourceSpan.Start;
@@ -145,7 +116,7 @@ namespace SwitchAnalyzer
             if (expressionType.TypeKind == TypeKind.Interface && shouldProcessInterface)
             {
                 bool ShouldProceed() => InterfaceAnalyzer.ShouldProceedWithChecks(switchCases);
-                IEnumerable<SwitchArgumentTypeItem<string>> AllImplementations() => InterfaceAnalyzer.GetAllImplementationNames(switchLocationStart, expressionType, context.SemanticModel);
+                IEnumerable<SwitchArgumentTypeItem<string>> AllImplementations() => InterfaceAnalyzer.GetAllImplementationNames(switchLocationStart, expressionType, context.Operation.SemanticModel);
                 IEnumerable<string> CaseImplementations() => PatternMatchingHelper.GetCaseValues(switchCases);
 
                 ProcessSwitch(ShouldProceed, AllImplementations, CaseImplementations, InterfaceAnalyzer.Rule);
@@ -154,7 +125,7 @@ namespace SwitchAnalyzer
             if (expressionType.TypeKind == TypeKind.Class && shouldProcessClass)
             {
                 bool ShouldProceed() => ClassAnalyzer.ShouldProceedWithChecks(switchCases, expressionType.Name);
-                IEnumerable<SwitchArgumentTypeItem<string>> AllImplementations() => ClassAnalyzer.GetAllImplementationNames(switchLocationStart, expressionType, context.SemanticModel);
+                IEnumerable<SwitchArgumentTypeItem<string>> AllImplementations() => ClassAnalyzer.GetAllImplementationNames(switchLocationStart, expressionType, context.Operation.SemanticModel);
                 IEnumerable<string> CaseImplementations() => PatternMatchingHelper.GetCaseValues(switchCases);
 
                 ProcessSwitch(ShouldProceed, AllImplementations, CaseImplementations, ClassAnalyzer.Rule);
@@ -179,7 +150,7 @@ namespace SwitchAnalyzer
             Func<IEnumerable<string>> caseImplementationFunc,
             DiagnosticDescriptor rule,
             Location location,
-            CodeBlockAnalysisContext context,
+            OperationAnalysisContext context,
             int switchStatementLocation) where T: IComparable
         {
             if (shouldProceedFunc == null
@@ -194,14 +165,14 @@ namespace SwitchAnalyzer
             var allImplementations = allImplementationsFunc().ToList();
 
             var obj = new object();
-            var caseImplementations = caseImplementationFunc().ToDictionary(x => x, _ => obj);
+            var caseImplementations = caseImplementationFunc().ToImmutableHashSet();
 
             var checkedValues = allImplementations
-                .Where(expectedValue => caseImplementations.ContainsKey(expectedValue.FullName))
-                .ToDictionary(x => x.Value, x => obj);
+                .Where(expectedValue => caseImplementations.Contains(expectedValue.FullName))
+                .ToImmutableHashSet();
 
             var notCheckedValues = allImplementations.Where(x =>
-                !checkedValues.ContainsKey(x.Value))
+                !checkedValues.Contains(x))
                 .OrderBy(x => x.FullName)
                 .ToList();
 
@@ -209,7 +180,7 @@ namespace SwitchAnalyzer
             {
                 var firstUncheckedValue = notCheckedValues.First();
                 var typeName = firstUncheckedValue.Member;
-                var symbols = context.SemanticModel.LookupSymbols(switchStatementLocation);
+                var symbols = context.Operation.SemanticModel.LookupSymbols(switchStatementLocation);
                 var shouldAddNamespace = !symbols.Any(x => x.Name == typeName && x.ContainingNamespace.Name == firstUncheckedValue.Prefix);
 
                 var notCoveredValues = notCheckedValues.Select(caseName =>
