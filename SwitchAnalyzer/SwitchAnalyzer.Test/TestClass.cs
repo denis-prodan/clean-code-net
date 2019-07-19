@@ -77,6 +77,23 @@ namespace SwitchAnalyzer.Test
                 case var inter: return TestEnum.Case3;
             }
         }
+
+        public TestEnum TestLambda(TestEnum val)
+        {
+            Func<TestEnum, TestEnum> func = v =>
+            {
+                // Does not warn about missing case
+                switch (v)
+                {
+                    case TestEnum.Case1: return TestEnum.Case2;
+                    case TestEnum.Case2: return TestEnum.Case1;
+                    default: throw new NotImplementedException();
+                }
+            };
+
+            return func(val);
+        }
+
         public interface ITestInterface
         {
         }
