@@ -8,7 +8,7 @@
   
   <PropertyGroup>
     <PackageId>SwitchAnalyzer</PackageId>
-    <PackageVersion>0.6.8.0</PackageVersion>
+    <PackageVersion>0.6.9.0</PackageVersion>
     <Authors>Denys Prodan</Authors>
     <PackageLicenseUrl></PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/denis-prodan/Switch-analyzer</PackageProjectUrl>
@@ -21,11 +21,11 @@ Additional rule to  check - switch statement doesn't have "default" branch or th
     <Copyright></Copyright>
     <PackageTags>SwitchAnalyzer, analyzers</PackageTags>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <Version>0.6.8</Version>
+    <Version>0.6.9</Version>
     <Company></Company>
     <Product>Switch Analyzer</Product>
-    <AssemblyVersion>0.6.8.0</AssemblyVersion>
-    <FileVersion>0.6.8.0</FileVersion>
+    <AssemblyVersion>0.6.9.0</AssemblyVersion>
+    <FileVersion>0.6.9.0</FileVersion>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

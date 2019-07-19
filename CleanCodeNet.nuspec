@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
   <metadata>
     <id>CleanCodeNet</id>
-    <version>0.3.5</version>
+    <version>0.3.6</version>
     <authors>Denys Prodan</authors>
     <owners>Denys Prodan</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -13,7 +13,7 @@
     <repository url="https://github.com/denis-prodan/constructor-null-analyzer" />
     <dependencies>
       <dependency id="NamedParametersAnalyzer" version="0.3.1" />
-      <dependency id="SwitchAnalyzer" version="0.6.8" />
+      <dependency id="SwitchAnalyzer" version="0.6.9" />
       <dependency id="ConstructorNullAnalyzer" version="0.4.1" />
       <dependency id="ExceptionsAnalyzer" version="0.1.5" />
     </dependencies>

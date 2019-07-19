@@ -377,6 +377,53 @@ namespace OtherNamespace
         }
 
         [TestMethod]
+        public void LambdaChecked()
+        {
+            var switchStatement = @"
+            Func<TestEnum, TestEnum> func = v =>
+            {
+                // Does not warn about missing case
+                switch (v)
+                {
+                    case TestEnum.Case1: return TestEnum.Case2;
+                    case TestEnum.Case2: return TestEnum.Case1;
+                    default: throw new NotImplementedException();
+                }
+            };
+
+            return func(val);";
+            var test = $@"{codeStart}
+                          {switchStatement}
+                          {GetEndSection()}";
+
+            VerifyCSharpDiagnostic(test, GetDiagnostic(28, 17, "TestEnum.Case3"));
+        }
+
+        [TestMethod]
+        public void InlineFuncionChecked()
+        {
+            var switchStatement = @"
+            TestEnum Inline(TestEnum v)
+            {
+                // Does not warn about missing case
+                switch (v)
+                {
+                    case TestEnum.Case1: return TestEnum.Case2;
+                    case TestEnum.Case2: return TestEnum.Case1;
+                    default: throw new NotImplementedException();
+                }
+            };
+
+            return Inline(val);";
+            var test = $@"{codeStart}
+                          {switchStatement}
+                          {GetEndSection()}";
+
+            VerifyCSharpDiagnostic(test, GetDiagnostic(28, 17, "TestEnum.Case3"));
+        }
+
+
+        [TestMethod]
         public void FixSimple()
         {
             var switchStatement = @"
@@ -543,7 +590,9 @@ namespace OtherNamespace
             VerifyCSharpFix(test, expectedResult);
         }
 
-        private DiagnosticResult GetDiagnostic(params string[] expectedEnums)
+        private DiagnosticResult GetDiagnostic(params string[] expectedEnums) => GetDiagnostic(25, 13, expectedEnums);        
+
+        private DiagnosticResult GetDiagnostic(int lineNumber, int columnNumber, params string[] expectedEnums)
         {
             return new DiagnosticResult
             {
@@ -553,7 +602,7 @@ namespace OtherNamespace
                 Locations =
                     new[]
                     {
-                        new DiagnosticResultLocation("Test0.cs", 25, 13)
+                        new DiagnosticResultLocation("Test0.cs", lineNumber, columnNumber)
                     }
             };
         }
